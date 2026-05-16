@@ -24,6 +24,12 @@ jobs:
       - name: Instalar dependencias Composer
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
+      - name: Instalar dependencias Node
+        run: npm install
+
+      - name: Compilar assets con Vite
+        run: npm run build
+
       - name: Configurar entorno
         run: |
           cp .env.example .env
