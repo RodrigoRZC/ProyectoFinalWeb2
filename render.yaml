@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: ecommerce-laravel
+    env: php
+    buildCommand: composer install --no-dev --optimize-autoloader && npm install && npm run build
+    startCommand: bash start.sh
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: DB_DATABASE
+        value: /var/data/database.sqlite
+      - key: SESSION_DRIVER
+        value: file
+      - key: CACHE_STORE
+        value: file
+      - key: LOG_CHANNEL
+        value: stack
+      - key: MAIL_MAILER
+        value: log
