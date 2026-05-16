@@ -1,0 +1,45 @@
+name: Laravel CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, sqlite3, pdo_sqlite, xml, bcmath, fileinfo
+          coverage: none
+
+      - name: Instalar dependencias Composer
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Configurar entorno
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Configurar SQLite para pruebas
+        run: |
+          touch database/database.sqlite
+          echo "DB_CONNECTION=sqlite" >> .env
+          echo "DB_DATABASE=$(pwd)/database/database.sqlite" >> .env
+
+      - name: Ejecutar migraciones
+        run: php artisan migrate --force
+
+      - name: Ejecutar seeders
+        run: php artisan db:seed --force
+
+      - name: Ejecutar pruebas automáticas
+        run: php artisan test --filter EcommerceTest
