@@ -28,5 +28,8 @@ php artisan db:seed --force 2>/dev/null || true
 # Storage link — apunta public/storage a storage/app/public
 php artisan storage:link 2>/dev/null || true
 
+# Forzar HTTPS
+php artisan config:cache
+
 # Iniciar servidor
 php artisan serve --host=0.0.0.0 --port=${PORT:-10000}
