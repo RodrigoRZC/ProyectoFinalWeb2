@@ -8,31 +8,27 @@ RUN apt-get update && apt-get install -y \
     unzip \
     sqlite3 \
     libsqlite3-dev \
-    nodejs \
-    npm \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
     && docker-php-ext-install pdo pdo_sqlite \
     && apt-get clean
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Directorio de trabajo
 WORKDIR /app
 
-# Copiar archivos del proyecto
 COPY . .
 
 # Instalar dependencias PHP
 RUN composer install --no-dev --optimize-autoloader
 
-# Instalar dependencias Node y compilar assets
+# Instalar Node y compilar assets
 RUN npm install && npm run build
 
-# Dar permisos
+# Permisos
 RUN chmod -R 775 storage bootstrap/cache
 
-# Exponer puerto
 EXPOSE 10000
 
-# Script de inicio
 CMD ["bash", "start.sh"]
